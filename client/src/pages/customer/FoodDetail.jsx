@@ -21,9 +21,10 @@ const FoodDetail = () => {
     const fetchItem = async () => {
       try {
         const [itemRes, reviewsRes] = await Promise.all([shopAPI.getMenuItem(id), shopAPI.getReviews(id)]);
-        setItem(itemRes.data.data);
-        setReviews(reviewsRes.data.data || []);
-        if (itemRes.data.data?.variants?.length > 0) setSelectedVariant(itemRes.data.data.variants[0]);
+        const itemData = itemRes.data.data?.item || itemRes.data.data;
+        setItem(itemData);
+        setReviews(itemRes.data.data?.reviews || reviewsRes.data.data || []);
+        if (itemData?.variants?.length > 0) setSelectedVariant(itemData.variants[0]);
       } catch { toast.error('Error loading item'); }
       finally { setLoading(false); }
     };
