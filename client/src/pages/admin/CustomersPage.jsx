@@ -38,7 +38,7 @@ const CustomersPage = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row gap-3 justify-between">
-        <div className="relative max-w-xs w-full"><Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" /><input value={search} onChange={(e) => setSearch(e.target.value)} className="input-field pl-10 text-sm" placeholder="Search customers..." /></div>
+        <div className="relative max-w-xs w-full"><Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" /><input value={search} onChange={(e) => setSearch(e.target.value)} className="input-field pl-10 text-sm" placeholder="Search customers..." /></div>
         <button onClick={() => { setForm({ name: '', phone: '', email: '', address: '', notes: '' }); setEditCustomer(null); setShowModal(true); }} className="btn-primary text-sm flex items-center gap-2"><Plus size={16} /> Add Customer</button>
       </div>
 
@@ -49,16 +49,16 @@ const CustomersPage = () => {
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-11 h-11 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">{c.name?.[0]}</div>
-                  <div><h4 className="font-semibold">{c.name}</h4><p className="text-xs text-gray-500">{c.phone}</p></div>
+                  <div><h4 className="font-semibold">{c.name}</h4><p className="text-xs text-slate-500">{c.phone}</p></div>
                 </div>
                 <div className="flex gap-1">
-                  <button onClick={() => { setEditCustomer(c); setForm({ name: c.name, phone: c.phone, email: c.email, address: c.address, notes: c.notes }); setShowModal(true); }} className="p-1.5 rounded-lg hover:bg-gray-100"><Edit2 size={14} className="text-blue-500" /></button>
-                  <button onClick={() => setDeleteId(c._id)} className="p-1.5 rounded-lg hover:bg-gray-100"><Trash2 size={14} className="text-red-400" /></button>
+                  <button onClick={() => { setEditCustomer(c); setForm({ name: c.name, phone: c.phone, email: c.email, address: c.address, notes: c.notes }); setShowModal(true); }} className="p-1.5 rounded-lg hover:bg-slate-100"><Edit2 size={14} className="text-blue-500" /></button>
+                  <button onClick={() => setDeleteId(c._id)} className="p-1.5 rounded-lg hover:bg-slate-100"><Trash2 size={14} className="text-red-400" /></button>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2 mt-3 text-sm">
-                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2 text-center"><p className="text-lg font-bold text-indigo-600">{c.totalOrders || 0}</p><p className="text-xs text-gray-500">Orders</p></div>
-                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2 text-center"><p className="text-lg font-bold text-emerald-600">৳{(c.totalSpent || 0).toLocaleString()}</p><p className="text-xs text-gray-500">Spent</p></div>
+                <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-2 text-center"><p className="text-lg font-bold text-indigo-600">{c.totalOrders || 0}</p><p className="text-xs text-slate-500">Orders</p></div>
+                <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-2 text-center"><p className="text-lg font-bold text-emerald-600">৳{(c.totalSpent || 0).toLocaleString()}</p><p className="text-xs text-slate-500">Spent</p></div>
               </div>
             </motion.div>
           ))}

@@ -43,7 +43,7 @@ const OrganizationPage = () => {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="card p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center"><Building2 size={24} className="text-indigo-600" /></div>
-          <div><h2 className="text-xl font-bold text-gray-800 dark:text-white">Organization Settings</h2><p className="text-sm text-gray-500">Manage your restaurant information</p></div>
+          <div><h2 className="text-xl font-bold text-slate-800 dark:text-white">Organization Settings</h2><p className="text-sm text-slate-500">Manage your restaurant information</p></div>
         </div>
 
         <form onSubmit={handleSave} className="space-y-5">

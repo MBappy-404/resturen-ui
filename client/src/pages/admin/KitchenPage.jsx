@@ -42,7 +42,7 @@ const KitchenPage = () => {
         <div className="flex gap-2">
           {['all', 'pending', 'confirmed', 'preparing', 'ready'].map(s => (
             <button key={s} onClick={() => setFilter(s)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${filter === s ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${filter === s ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
               {s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)} ({s === 'all' ? orders.length : orders.filter(o => o.status === s).length})
             </button>
           ))}
@@ -56,18 +56,18 @@ const KitchenPage = () => {
         <AnimatePresence>
           {filtered.map(order => (
             <motion.div key={order._id} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className={`rounded-2xl border-2 p-4 ${statusColors[order.status] || 'border-gray-200 bg-white'}`}>
+              className={`rounded-2xl border-2 p-4 ${statusColors[order.status] || 'border-slate-200 bg-white'}`}>
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <span className="font-bold text-lg">{order.orderNo}</span>
                   <div className="flex items-center gap-2 mt-0.5">
                     <StatusBadge status={order.status} />
-                    <span className="text-xs text-gray-500 capitalize">{order.orderType?.replace('_', ' ')}</span>
+                    <span className="text-xs text-slate-500 capitalize">{order.orderType?.replace('_', ' ')}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-1 text-sm font-medium">
-                  <Clock size={14} className="text-gray-400" />
-                  <span className={`${parseInt(getTimeAgo(order.createdAt)) > 30 ? 'text-red-500' : 'text-gray-600'}`}>{getTimeAgo(order.createdAt)}</span>
+                  <Clock size={14} className="text-slate-400" />
+                  <span className={`${parseInt(getTimeAgo(order.createdAt)) > 30 ? 'text-red-500' : 'text-slate-600'}`}>{getTimeAgo(order.createdAt)}</span>
                 </div>
               </div>
 
@@ -120,8 +120,8 @@ const KitchenPage = () => {
 
       {filtered.length === 0 && (
         <div className="text-center py-20">
-          <ChefHat size={48} className="text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-400 text-lg">No orders in kitchen</p>
+          <ChefHat size={48} className="text-slate-300 mx-auto mb-4" />
+          <p className="text-slate-400 text-lg">No orders in kitchen</p>
         </div>
       )}
     </div>

@@ -43,7 +43,7 @@ const ReportsPage = () => {
       <div className="flex gap-2">
         {['today', 'week', 'month', 'year'].map(p => (
           <button key={p} onClick={() => setPeriod(p)}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${period === p ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${period === p ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
             {p.charAt(0).toUpperCase() + p.slice(1)}
           </button>
         ))}
@@ -59,8 +59,8 @@ const ReportsPage = () => {
         ].map((s, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="card p-5">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${`bg-${s.color}-100 text-${s.color}-600`}`}><s.icon size={18} /></div>
-            <p className="text-2xl font-bold text-gray-800 dark:text-white">{s.value}</p>
-            <p className="text-sm text-gray-500">{s.label}</p>
+            <p className="text-2xl font-bold text-slate-800 dark:text-white">{s.value}</p>
+            <p className="text-sm text-slate-500">{s.label}</p>
           </motion.div>
         ))}
       </div>

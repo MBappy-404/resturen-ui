@@ -44,16 +44,16 @@ const ReservationsPage = () => {
           {reservations.map((r, idx) => (
             <motion.div key={r._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.03 }} className="card p-5">
               <div className="flex items-start justify-between mb-3">
-                <div><h4 className="font-semibold">{r.customerName}</h4><p className="text-xs text-gray-500">{r.customerPhone}</p></div>
+                <div><h4 className="font-semibold">{r.customerName}</h4><p className="text-xs text-slate-500">{r.customerPhone}</p></div>
                 <StatusBadge status={r.status} />
               </div>
               <div className="grid grid-cols-3 gap-2 text-sm mb-3">
-                <div className="flex items-center gap-1.5 text-gray-500"><Calendar size={14} />{new Date(r.date).toLocaleDateString()}</div>
-                <div className="flex items-center gap-1.5 text-gray-500"><Clock size={14} />{r.time}</div>
-                <div className="flex items-center gap-1.5 text-gray-500"><Users size={14} />{r.guests} guests</div>
+                <div className="flex items-center gap-1.5 text-slate-500"><Calendar size={14} />{new Date(r.date).toLocaleDateString()}</div>
+                <div className="flex items-center gap-1.5 text-slate-500"><Clock size={14} />{r.time}</div>
+                <div className="flex items-center gap-1.5 text-slate-500"><Users size={14} />{r.guests} guests</div>
               </div>
-              {r.notes && <p className="text-xs text-gray-400 mb-3">{r.notes}</p>}
-              <div className="flex gap-2 pt-3 border-t border-gray-100">
+              {r.notes && <p className="text-xs text-slate-400 mb-3">{r.notes}</p>}
+              <div className="flex gap-2 pt-3 border-t border-slate-100">
                 {r.status === 'pending' && (
                   <>
                     <button onClick={() => updateStatus(r._id, 'confirmed')} className="flex-1 text-xs px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 font-medium flex items-center justify-center gap-1"><Check size={12} /> Confirm</button>

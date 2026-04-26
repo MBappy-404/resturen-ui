@@ -41,16 +41,16 @@ const Register = () => {
             <div className="w-16 h-16 rounded-2xl bg-indigo-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-500/30">
               <UtensilsCrossed size={28} className="text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-800">Create Account</h1>
-            <p className="text-gray-500 mt-1">Set up your restaurant</p>
+            <h1 className="text-2xl font-bold text-slate-800">Create Account</h1>
+            <p className="text-slate-500 mt-1">Set up your restaurant</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {fields.map(({ key, label, icon: Icon, type, placeholder }) => (
               <div key={key}>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>
                 <div className="relative">
-                  <Icon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Icon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type={type}
                     value={form[key]}
@@ -67,7 +67,7 @@ const Register = () => {
             </button>
           </form>
 
-          <p className="text-sm text-gray-500 text-center mt-4">
+          <p className="text-sm text-slate-500 text-center mt-4">
             Already have an account? <Link to="/admin/login" className="text-indigo-600 font-medium hover:underline">Sign In</Link>
           </p>
         </div>

@@ -43,7 +43,7 @@ const SettingsPage = () => {
       <div className="flex gap-2 mb-6 overflow-x-auto">
         {tabs.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${tab === t.id ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${tab === t.id ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
             <t.icon size={16} /> {t.label}
           </button>
         ))}
@@ -76,8 +76,8 @@ const SettingsPage = () => {
       {tab === 'appearance' && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="card p-6">
           <h3 className="text-lg font-semibold mb-4">Appearance</h3>
-          <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50">
-            <div><p className="font-medium">Dark Mode</p><p className="text-sm text-gray-500">Toggle dark/light theme</p></div>
+          <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50">
+            <div><p className="font-medium">Dark Mode</p><p className="text-sm text-slate-500">Toggle dark/light theme</p></div>
             <button onClick={toggleTheme} className={`relative w-14 h-7 rounded-full transition-colors ${theme === 'dark' ? 'bg-indigo-600' : 'bg-gray-300'}`}>
               <span className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow transition-transform ${theme === 'dark' ? 'translate-x-7' : ''}`} />
             </button>

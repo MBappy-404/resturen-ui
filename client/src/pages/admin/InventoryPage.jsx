@@ -66,31 +66,31 @@ const InventoryPage = () => {
       {items.length === 0 ? <EmptyState icon={Package} title="No inventory items" /> : (
         <div className="card overflow-hidden">
           <table className="w-full">
-            <thead><tr className="border-b border-gray-100 bg-gray-50">
-              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Item</th>
-              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Category</th>
-              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Stock</th>
-              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Cost/Unit</th>
-              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Value</th>
-              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Status</th>
-              <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Actions</th>
+            <thead><tr className="border-b border-slate-100 bg-slate-50">
+              <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Item</th>
+              <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Category</th>
+              <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Stock</th>
+              <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Cost/Unit</th>
+              <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Value</th>
+              <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Status</th>
+              <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Actions</th>
             </tr></thead>
             <tbody>
               {items.map((item, idx) => {
                 const isLow = item.currentStock <= item.minimumStock;
                 return (
-                  <motion.tr key={item._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: idx * 0.02 }} className="border-b border-gray-50 hover:bg-gray-50/50">
-                    <td className="py-3 px-4"><p className="font-medium text-sm">{item.name}</p><p className="text-xs text-gray-400">{item.sku || '-'}</p></td>
-                    <td className="py-3 px-4 text-sm text-gray-600 capitalize">{item.category?.replace('_', ' ')}</td>
-                    <td className="py-3 px-4"><span className={`font-semibold text-sm ${isLow ? 'text-red-500' : 'text-gray-800'}`}>{item.currentStock} {item.unit}</span><p className="text-xs text-gray-400">Min: {item.minimumStock}</p></td>
+                  <motion.tr key={item._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: idx * 0.02 }} className="border-b border-gray-50 hover:bg-slate-50/50">
+                    <td className="py-3 px-4"><p className="font-medium text-sm">{item.name}</p><p className="text-xs text-slate-400">{item.sku || '-'}</p></td>
+                    <td className="py-3 px-4 text-sm text-slate-600 capitalize">{item.category?.replace('_', ' ')}</td>
+                    <td className="py-3 px-4"><span className={`font-semibold text-sm ${isLow ? 'text-red-500' : 'text-slate-800'}`}>{item.currentStock} {item.unit}</span><p className="text-xs text-slate-400">Min: {item.minimumStock}</p></td>
                     <td className="py-3 px-4 text-sm">৳{item.costPerUnit}</td>
                     <td className="py-3 px-4 text-sm font-medium">৳{(item.currentStock * item.costPerUnit).toLocaleString()}</td>
                     <td className="py-3 px-4">{isLow ? <span className="badge badge-danger"><AlertTriangle size={10} className="mr-1" />Low</span> : <span className="badge badge-success">OK</span>}</td>
                     <td className="py-3 px-4 text-right">
                       <div className="flex justify-end gap-1">
-                        <button onClick={() => { setStockItem(item); setStockForm({ type: 'added', quantity: '', note: '' }); setShowStockModal(true); }} className="p-1.5 rounded-lg hover:bg-gray-100" title="Update Stock"><TrendingUp size={14} className="text-emerald-500" /></button>
-                        <button onClick={() => { setEditItem(item); setForm({ name: item.name, category: item.category, unit: item.unit, currentStock: item.currentStock, minimumStock: item.minimumStock, costPerUnit: item.costPerUnit, supplier: item.supplier || { name: '', phone: '' } }); setShowModal(true); }} className="p-1.5 rounded-lg hover:bg-gray-100"><Edit2 size={14} className="text-blue-500" /></button>
-                        <button onClick={() => setDeleteId(item._id)} className="p-1.5 rounded-lg hover:bg-gray-100"><Trash2 size={14} className="text-red-400" /></button>
+                        <button onClick={() => { setStockItem(item); setStockForm({ type: 'added', quantity: '', note: '' }); setShowStockModal(true); }} className="p-1.5 rounded-lg hover:bg-slate-100" title="Update Stock"><TrendingUp size={14} className="text-emerald-500" /></button>
+                        <button onClick={() => { setEditItem(item); setForm({ name: item.name, category: item.category, unit: item.unit, currentStock: item.currentStock, minimumStock: item.minimumStock, costPerUnit: item.costPerUnit, supplier: item.supplier || { name: '', phone: '' } }); setShowModal(true); }} className="p-1.5 rounded-lg hover:bg-slate-100"><Edit2 size={14} className="text-blue-500" /></button>
+                        <button onClick={() => setDeleteId(item._id)} className="p-1.5 rounded-lg hover:bg-slate-100"><Trash2 size={14} className="text-red-400" /></button>
                       </div>
                     </td>
                   </motion.tr>

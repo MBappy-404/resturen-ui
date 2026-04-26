@@ -41,27 +41,27 @@ const InvoicesPage = () => {
       {invoices.length === 0 ? <EmptyState icon={FileText} title="No invoices yet" description="Invoices are generated from completed orders" /> : (
         <div className="card overflow-hidden">
           <table className="w-full">
-            <thead><tr className="border-b border-gray-100 bg-gray-50">
-              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Invoice No</th>
-              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Order</th>
-              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Customer</th>
-              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Date</th>
-              <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Total</th>
-              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Status</th>
-              <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Actions</th>
+            <thead><tr className="border-b border-slate-100 bg-slate-50">
+              <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Invoice No</th>
+              <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Order</th>
+              <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Customer</th>
+              <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Date</th>
+              <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Total</th>
+              <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Status</th>
+              <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase">Actions</th>
             </tr></thead>
             <tbody>
               {invoices.map((inv, idx) => (
-                <motion.tr key={inv._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: idx * 0.02 }} className="border-b border-gray-50 hover:bg-gray-50/50">
+                <motion.tr key={inv._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: idx * 0.02 }} className="border-b border-gray-50 hover:bg-slate-50/50">
                   <td className="py-3 px-4 font-medium text-sm text-indigo-600">{inv.invoiceNo}</td>
-                  <td className="py-3 px-4 text-sm text-gray-500">{inv.order?.orderNo || '-'}</td>
+                  <td className="py-3 px-4 text-sm text-slate-500">{inv.order?.orderNo || '-'}</td>
                   <td className="py-3 px-4 text-sm">{inv.customerInfo?.name || '-'}</td>
-                  <td className="py-3 px-4 text-sm text-gray-500">{new Date(inv.createdAt).toLocaleDateString()}</td>
+                  <td className="py-3 px-4 text-sm text-slate-500">{new Date(inv.createdAt).toLocaleDateString()}</td>
                   <td className="py-3 px-4 text-sm font-semibold text-right">৳{(inv.grandTotal || inv.total)?.toLocaleString()}</td>
                   <td className="py-3 px-4"><StatusBadge status={inv.status} /></td>
                   <td className="py-3 px-4 text-right">
-                    <button onClick={() => viewInvoice(inv._id)} className="p-1.5 rounded-lg hover:bg-gray-100"><Eye size={14} className="text-blue-500" /></button>
-                    <button onClick={() => viewInvoice(inv._id)} className="p-1.5 rounded-lg hover:bg-gray-100"><Printer size={14} className="text-gray-500" /></button>
+                    <button onClick={() => viewInvoice(inv._id)} className="p-1.5 rounded-lg hover:bg-slate-100"><Eye size={14} className="text-blue-500" /></button>
+                    <button onClick={() => viewInvoice(inv._id)} className="p-1.5 rounded-lg hover:bg-slate-100"><Printer size={14} className="text-slate-500" /></button>
                   </td>
                 </motion.tr>
               ))}
@@ -77,12 +77,12 @@ const InvoicesPage = () => {
             <div ref={printRef} className="bg-white p-6 text-sm">
               <div className="text-center mb-4">
                 <h2 className="text-xl font-bold">{selectedInvoice.organization?.name || 'Restaurant'}</h2>
-                <p className="text-gray-500 text-xs">{selectedInvoice.organization?.address}</p>
-                <p className="text-gray-500 text-xs">{selectedInvoice.organization?.phone}</p>
+                <p className="text-slate-500 text-xs">{selectedInvoice.organization?.address}</p>
+                <p className="text-slate-500 text-xs">{selectedInvoice.organization?.phone}</p>
                 <hr className="my-2 border-dashed" />
                 <p className="font-bold">INVOICE</p>
                 <p className="text-xs">#{selectedInvoice.invoiceNo}</p>
-                <p className="text-xs text-gray-500">{new Date(selectedInvoice.createdAt).toLocaleString()}</p>
+                <p className="text-xs text-slate-500">{new Date(selectedInvoice.createdAt).toLocaleString()}</p>
               </div>
               {selectedInvoice.customerInfo?.name && <p className="text-xs mb-2">Customer: {selectedInvoice.customerInfo.name} | {selectedInvoice.customerInfo.phone}</p>}
               <hr className="my-2 border-dashed" />
@@ -103,7 +103,7 @@ const InvoicesPage = () => {
                 {selectedInvoice.paymentMethod && <div className="flex justify-between"><span>Payment</span><span className="capitalize">{selectedInvoice.paymentMethod}</span></div>}
               </div>
               <hr className="my-2 border-dashed" />
-              <p className="text-center text-xs text-gray-400">Thank you for dining with us!</p>
+              <p className="text-center text-xs text-slate-400">Thank you for dining with us!</p>
             </div>
             <div className="flex justify-end gap-3 mt-4">
               <button onClick={handlePrint} className="btn-primary flex items-center gap-2"><Printer size={16} /> Print</button>

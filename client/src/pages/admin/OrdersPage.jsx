@@ -92,7 +92,7 @@ const OrdersPage = () => {
         <div className="flex flex-wrap gap-2">
           {['', 'pending', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled'].map(s => (
             <button key={s} onClick={() => setFilter({ ...filter, status: s, page: 1 })}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${filter.status === s ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${filter.status === s ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
               {s ? s.charAt(0).toUpperCase() + s.slice(1) : 'All'}
             </button>
           ))}
@@ -114,12 +114,12 @@ const OrdersPage = () => {
                 <span className="font-bold text-indigo-600">{order.orderNo}</span>
                 <StatusBadge status={order.status} />
               </div>
-              <div className="space-y-1 text-sm text-gray-500">
+              <div className="space-y-1 text-sm text-slate-500">
                 <p className="capitalize">{order.orderType?.replace('_', ' ')} {order.table?.tableNo ? `• ${order.table.tableNo}` : ''}</p>
                 <p>{order.items?.length} items</p>
               </div>
-              <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                <span className="text-lg font-bold text-gray-800 dark:text-white">৳{order.total?.toLocaleString()}</span>
+              <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+                <span className="text-lg font-bold text-slate-800 dark:text-white">৳{order.total?.toLocaleString()}</span>
                 <StatusBadge status={order.paymentStatus} />
               </div>
               <div className="flex gap-1 mt-3">
@@ -143,22 +143,22 @@ const OrdersPage = () => {
         {selectedOrder && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div><p className="text-xs text-gray-500">Status</p><StatusBadge status={selectedOrder.status} /></div>
-              <div><p className="text-xs text-gray-500">Payment</p><StatusBadge status={selectedOrder.paymentStatus} /></div>
-              <div><p className="text-xs text-gray-500">Type</p><p className="text-sm font-medium capitalize">{selectedOrder.orderType?.replace('_', ' ')}</p></div>
-              <div><p className="text-xs text-gray-500">Table</p><p className="text-sm font-medium">{selectedOrder.table?.tableNo || 'N/A'}</p></div>
+              <div><p className="text-xs text-slate-500">Status</p><StatusBadge status={selectedOrder.status} /></div>
+              <div><p className="text-xs text-slate-500">Payment</p><StatusBadge status={selectedOrder.paymentStatus} /></div>
+              <div><p className="text-xs text-slate-500">Type</p><p className="text-sm font-medium capitalize">{selectedOrder.orderType?.replace('_', ' ')}</p></div>
+              <div><p className="text-xs text-slate-500">Table</p><p className="text-sm font-medium">{selectedOrder.table?.tableNo || 'N/A'}</p></div>
             </div>
             <div>
               <h4 className="font-semibold text-sm mb-2">Items</h4>
               <div className="space-y-2">
                 {selectedOrder.items?.map((item, i) => (
-                  <div key={i} className="flex justify-between text-sm bg-gray-50 dark:bg-gray-700/50 p-2 rounded-lg">
+                  <div key={i} className="flex justify-between text-sm bg-slate-50 dark:bg-slate-700/50 p-2 rounded-lg">
                     <span>{item.name} x{item.quantity}</span>
                     <span className="font-medium">৳{item.subtotal}</span>
                   </div>
                 ))}
               </div>
-              <div className="mt-3 pt-3 border-t border-gray-200 space-y-1 text-sm">
+              <div className="mt-3 pt-3 border-t border-slate-200 space-y-1 text-sm">
                 <div className="flex justify-between"><span>Subtotal</span><span>৳{selectedOrder.subtotal}</span></div>
                 <div className="flex justify-between"><span>Tax</span><span>৳{selectedOrder.tax?.toFixed(0)}</span></div>
                 <div className="flex justify-between"><span>Service Charge</span><span>৳{selectedOrder.serviceCharge?.toFixed(0)}</span></div>
@@ -169,7 +169,7 @@ const OrdersPage = () => {
             <div className="flex flex-wrap gap-2 pt-4 border-t">
               {(selectedOrder.orderType === 'delivery' ? deliveryFlow : statusFlow).map(s => (
                 <button key={s} onClick={() => handleStatusUpdate(selectedOrder._id, s)}
-                  className={`text-xs px-3 py-1.5 rounded-lg font-medium capitalize transition-all ${selectedOrder.status === s ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                  className={`text-xs px-3 py-1.5 rounded-lg font-medium capitalize transition-all ${selectedOrder.status === s ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
                   {s.replace('_', ' ')}
                 </button>
               ))}
@@ -222,7 +222,7 @@ const OrdersPage = () => {
               <div className="max-h-60 overflow-y-auto space-y-1">
                 {menuItems.filter(i => i.isAvailable).map(item => (
                   <button key={item._id} type="button" onClick={() => addItemToOrder(item)}
-                    className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 text-left text-sm">
+                    className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-left text-sm">
                     <span>{item.name}</span>
                     <span className="font-medium text-indigo-600">৳{item.price}</span>
                   </button>
@@ -233,12 +233,12 @@ const OrdersPage = () => {
               <h4 className="font-semibold text-sm mb-2">Order Items ({newOrder.items.length})</h4>
               <div className="space-y-2">
                 {newOrder.items.map((item, i) => (
-                  <div key={i} className="flex items-center justify-between bg-gray-50 p-2 rounded-lg text-sm">
+                  <div key={i} className="flex items-center justify-between bg-slate-50 p-2 rounded-lg text-sm">
                     <span className="flex-1">{item.name}</span>
                     <div className="flex items-center gap-2">
-                      <button type="button" onClick={() => setNewOrder(prev => ({ ...prev, items: prev.items.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1), subtotal: Math.max(1, it.quantity - 1) * it.unitPrice } : it) }))} className="w-6 h-6 rounded bg-gray-200 text-sm">-</button>
+                      <button type="button" onClick={() => setNewOrder(prev => ({ ...prev, items: prev.items.map((it, idx) => idx === i ? { ...it, quantity: Math.max(1, it.quantity - 1), subtotal: Math.max(1, it.quantity - 1) * it.unitPrice } : it) }))} className="w-6 h-6 rounded bg-slate-200 text-sm">-</button>
                       <span className="font-medium">{item.quantity}</span>
-                      <button type="button" onClick={() => setNewOrder(prev => ({ ...prev, items: prev.items.map((it, idx) => idx === i ? { ...it, quantity: it.quantity + 1, subtotal: (it.quantity + 1) * it.unitPrice } : it) }))} className="w-6 h-6 rounded bg-gray-200 text-sm">+</button>
+                      <button type="button" onClick={() => setNewOrder(prev => ({ ...prev, items: prev.items.map((it, idx) => idx === i ? { ...it, quantity: it.quantity + 1, subtotal: (it.quantity + 1) * it.unitPrice } : it) }))} className="w-6 h-6 rounded bg-slate-200 text-sm">+</button>
                       <span className="font-medium w-16 text-right">৳{item.subtotal}</span>
                     </div>
                   </div>

@@ -25,11 +25,11 @@ const AdminLayout = () => {
   const title = pageTitles[location.pathname] || 'Dashboard';
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="lg:ml-64">
+      <div className="lg:ml-[260px] min-h-screen">
         <Topbar onMenuClick={() => setSidebarOpen(true)} title={title} />
-        <main className="p-4 lg:p-6">
+        <main className="p-4 lg:p-6 xl:p-8">
           <Outlet />
         </main>
       </div>

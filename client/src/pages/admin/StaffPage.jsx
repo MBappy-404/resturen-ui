@@ -52,21 +52,21 @@ const StaffPage = () => {
                     {s.user?.name?.[0] || 'S'}
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800 dark:text-white">{s.user?.name}</h4>
-                    <p className="text-xs text-gray-500">{s.employeeId} • {s.user?.email}</p>
+                    <h4 className="font-semibold text-slate-800 dark:text-white">{s.user?.name}</h4>
+                    <p className="text-xs text-slate-500">{s.employeeId} • {s.user?.email}</p>
                   </div>
                 </div>
                 <StatusBadge status={s.user?.isActive ? 'active' : 'inactive'} />
               </div>
               <div className="grid grid-cols-2 gap-2 text-sm mb-3">
-                <div><span className="text-gray-400 text-xs">Position</span><p className="capitalize font-medium">{s.position?.replace('_', ' ')}</p></div>
-                <div><span className="text-gray-400 text-xs">Department</span><p className="capitalize font-medium">{s.department}</p></div>
-                <div><span className="text-gray-400 text-xs">Shift</span><p className="capitalize font-medium">{s.shift?.replace('_', ' ')}</p></div>
-                <div><span className="text-gray-400 text-xs">Salary</span><p className="font-medium">৳{s.salary?.toLocaleString()}</p></div>
+                <div><span className="text-slate-400 text-xs">Position</span><p className="capitalize font-medium">{s.position?.replace('_', ' ')}</p></div>
+                <div><span className="text-slate-400 text-xs">Department</span><p className="capitalize font-medium">{s.department}</p></div>
+                <div><span className="text-slate-400 text-xs">Shift</span><p className="capitalize font-medium">{s.shift?.replace('_', ' ')}</p></div>
+                <div><span className="text-slate-400 text-xs">Salary</span><p className="font-medium">৳{s.salary?.toLocaleString()}</p></div>
               </div>
-              <div className="flex justify-end gap-1 pt-3 border-t border-gray-100">
-                <button onClick={() => { setEditStaff(s); setForm({ name: s.user?.name, email: s.user?.email, phone: s.user?.phone || '', role: s.user?.role, position: s.position, department: s.department, shift: s.shift, salary: s.salary }); setShowModal(true); }} className="p-2 rounded-lg hover:bg-gray-100"><Edit2 size={14} className="text-blue-500" /></button>
-                <button onClick={() => setDeleteId(s._id)} className="p-2 rounded-lg hover:bg-gray-100"><Trash2 size={14} className="text-red-400" /></button>
+              <div className="flex justify-end gap-1 pt-3 border-t border-slate-100">
+                <button onClick={() => { setEditStaff(s); setForm({ name: s.user?.name, email: s.user?.email, phone: s.user?.phone || '', role: s.user?.role, position: s.position, department: s.department, shift: s.shift, salary: s.salary }); setShowModal(true); }} className="p-2 rounded-lg hover:bg-slate-100"><Edit2 size={14} className="text-blue-500" /></button>
+                <button onClick={() => setDeleteId(s._id)} className="p-2 rounded-lg hover:bg-slate-100"><Trash2 size={14} className="text-red-400" /></button>
               </div>
             </motion.div>
           ))}
