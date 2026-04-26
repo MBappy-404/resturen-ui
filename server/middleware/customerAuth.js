@@ -10,7 +10,11 @@ const customerProtect = async (req, res, next) => {
     return res.status(401).json({ success: false, message: 'Not authorized, no token' });
   }
   try {
-    const decoded = jwt.verify(token, process.env.CUSTOMER_JWT_SECRET);
+    const secret = process.env.CUSTOMER_JWT_SECRET;
+    if (!secret) {
+      return res.status(500).json({ success: false, message: 'Customer JWT Secret is not configured' });
+    }
+    const decoded = jwt.verify(token, secret);
     req.customer = await CustomerUser.findById(decoded.id);
     if (!req.customer) {
       return res.status(401).json({ success: false, message: 'Customer not found' });
@@ -28,8 +32,11 @@ const optionalCustomerAuth = async (req, res, next) => {
   }
   if (token) {
     try {
-      const decoded = jwt.verify(token, process.env.CUSTOMER_JWT_SECRET);
-      req.customer = await CustomerUser.findById(decoded.id);
+      const secret = process.env.CUSTOMER_JWT_SECRET;
+      if (secret) {
+        const decoded = jwt.verify(token, secret);
+        req.customer = await CustomerUser.findById(decoded.id);
+      }
     } catch (error) {
       // Silently continue without auth
     }

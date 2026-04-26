@@ -20,7 +20,7 @@ const timelineSchema = new mongoose.Schema({
 }, { _id: true });
 
 const orderSchema = new mongoose.Schema({
-  orderNo: { type: String, unique: true },
+  orderNo: { type: String },
   organization: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: true },
   branch: { type: mongoose.Schema.Types.ObjectId, ref: 'Branch' },
   orderType: { type: String, enum: ['dine_in', 'takeaway', 'delivery', 'online'], default: 'dine_in' },
@@ -68,10 +68,36 @@ const orderSchema = new mongoose.Schema({
   timeline: [timelineSchema]
 }, { timestamps: true });
 
+// Compound index for uniqueness per organization
+orderSchema.index({ organization: 1, orderNo: 1 }, { unique: true });
+
 orderSchema.pre('save', async function(next) {
   if (!this.orderNo) {
-    const count = await mongoose.model('Order').countDocuments({ organization: this.organization });
-    this.orderNo = `ORD-${String(count + 1).padStart(5, '0')}`;
+    const lastOrder = await mongoose.model('Order')
+      .findOne({ organization: this.organization })
+      .sort({ orderNo: -1 });
+
+    let nextNumber = 1;
+    if (lastOrder && lastOrder.orderNo) {
+      const parts = lastOrder.orderNo.split('-');
+      const lastNumber = parseInt(parts[parts.length - 1]);
+      if (!isNaN(lastNumber)) {
+        nextNumber = lastNumber + 1;
+      }
+    }
+
+    // Get organization prefix if possible
+    let prefix = 'ORD';
+    try {
+      const org = await mongoose.model('Organization').findById(this.organization);
+      if (org && org.settings && org.settings.orderPrefix) {
+        prefix = org.settings.orderPrefix;
+      }
+    } catch (err) {
+      // Fallback to ORD
+    }
+
+    this.orderNo = `${prefix}-${String(nextNumber).padStart(5, '0')}`;
   }
   next();
 });
