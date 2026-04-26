@@ -1,0 +1,173 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  --primary: 79 70 229;
+  --primary-light: 99 102 241;
+  --secondary: 14 165 233;
+  --success: 16 185 129;
+  --warning: 245 158 11;
+  --danger: 239 68 68;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(156 163 175) transparent;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+.btn-primary {
+  background-color: #4f46e5;
+  color: white;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  background-color: #4338ca;
+  box-shadow: 0 10px 15px -3px rgb(79 70 229 / 0.25);
+}
+.btn-primary:active { transform: scale(0.95); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-secondary {
+  background-color: white;
+  color: #374151;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.btn-secondary:hover { background-color: #f9fafb; border-color: #d1d5db; }
+.btn-secondary:active { transform: scale(0.95); }
+
+.btn-danger {
+  background-color: #ef4444;
+  color: white;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.btn-danger:hover { background-color: #dc2626; }
+
+.btn-success {
+  background-color: #10b981;
+  color: white;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.btn-success:hover { background-color: #059669; }
+
+.input-field {
+  width: 100%;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  background-color: white;
+  color: #1f2937;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+  outline: none;
+}
+.input-field::placeholder { color: #9ca3af; }
+.input-field:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgb(79 70 229 / 0.1);
+}
+
+.card {
+  background-color: white;
+  border-radius: 1rem;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: box-shadow 0.3s;
+}
+.card:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.glass {
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  color: #9ca3af;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.sidebar-item:hover { color: white; background-color: rgba(255,255,255,0.1); }
+.sidebar-item.active {
+  color: white;
+  background-color: #4f46e5;
+  box-shadow: 0 10px 15px -3px rgb(79 70 229 / 0.3);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.badge-success { background-color: #d1fae5; color: #047857; }
+.badge-warning { background-color: #fef3c7; color: #b45309; }
+.badge-danger { background-color: #fee2e2; color: #b91c1c; }
+.badge-info { background-color: #e0f2fe; color: #0369a1; }
+.badge-purple { background-color: #ede9fe; color: #6d28d9; }
+.badge-gray { background-color: #f3f4f6; color: #4b5563; }
+
+.dark .card { background-color: #1f2937; border-color: #374151; }
+.dark .input-field { background-color: #1f2937; border-color: #4b5563; color: white; }
+.dark .input-field::placeholder { color: #6b7280; }
+.dark .btn-secondary { background-color: #1f2937; color: #e5e7eb; border-color: #4b5563; }
+.dark .btn-secondary:hover { background-color: #374151; }
+
+.stat-card {
+  background-color: white;
+  border-radius: 1rem;
+  border: 1px solid #f3f4f6;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-slide-up { animation: slideUp 0.3s ease-out; }
+.animate-fade-in { animation: fadeIn 0.3s ease-out; }
