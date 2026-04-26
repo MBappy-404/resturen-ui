@@ -22,8 +22,10 @@ const ShopMenu = () => {
           shopAPI.getMenu({ category: selectedCategory, search }),
           shopAPI.getCategories()
         ]);
-        setItems(menuRes.data.data || []);
-        setCategories(catRes.data.data || []);
+        const menuData = menuRes.data.data;
+        setItems(Array.isArray(menuData) ? menuData : menuData?.items || []);
+        const catData = catRes.data.data;
+        setCategories(Array.isArray(catData) ? catData : catData?.categories || []);
       } catch { console.error('Error loading menu'); }
       finally { setLoading(false); }
     };
