@@ -12,7 +12,7 @@ const ReservationsPage = () => {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({ customerName: '', customerPhone: '', customerEmail: '', date: '', time: '', guests: '2', notes: '' });
+  const [form, setForm] = useState({ customerName: '', customerPhone: '', customerEmail: '', date: '', timeSlot: '', guestCount: '2', specialRequest: '' });
 
   const fetchReservations = useCallback(async () => {
     try { const { data } = await reservationAPI.getReservations(); setReservations(data.data); } catch { toast.error('Error'); } finally { setLoading(false); }
@@ -22,7 +22,7 @@ const ReservationsPage = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     try {
-      await reservationAPI.create({ ...form, guests: Number(form.guests) });
+      await reservationAPI.create({ ...form, guestCount: Number(form.guestCount) });
       toast.success('Reservation created'); setShowModal(false); fetchReservations();
     } catch (error) { toast.error(error.response?.data?.message || 'Error'); }
   };
@@ -36,7 +36,7 @@ const ReservationsPage = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-end">
-        <button onClick={() => { setForm({ customerName: '', customerPhone: '', customerEmail: '', date: '', time: '', guests: '2', notes: '' }); setShowModal(true); }} className="btn-primary text-sm flex items-center gap-2"><Plus size={16} /> New Reservation</button>
+        <button onClick={() => { setForm({ customerName: '', customerPhone: '', customerEmail: '', date: '', timeSlot: '', guestCount: '2', specialRequest: '' }); setShowModal(true); }} className="btn-primary text-sm flex items-center gap-2"><Plus size={16} /> New Reservation</button>
       </div>
 
       {reservations.length === 0 ? <EmptyState icon={Calendar} title="No reservations" /> : (
@@ -49,10 +49,10 @@ const ReservationsPage = () => {
               </div>
               <div className="grid grid-cols-3 gap-2 text-sm mb-3">
                 <div className="flex items-center gap-1.5 text-slate-500"><Calendar size={14} />{new Date(r.date).toLocaleDateString()}</div>
-                <div className="flex items-center gap-1.5 text-slate-500"><Clock size={14} />{r.time}</div>
-                <div className="flex items-center gap-1.5 text-slate-500"><Users size={14} />{r.guests} guests</div>
+                <div className="flex items-center gap-1.5 text-slate-500"><Clock size={14} />{r.timeSlot}</div>
+                <div className="flex items-center gap-1.5 text-slate-500"><Users size={14} />{r.guestCount} guests</div>
               </div>
-              {r.notes && <p className="text-xs text-slate-400 mb-3">{r.notes}</p>}
+              {r.specialRequest && <p className="text-xs text-slate-400 mb-3">{r.specialRequest}</p>}
               <div className="flex gap-2 pt-3 border-t border-slate-100">
                 {r.status === 'pending' && (
                   <>
@@ -78,10 +78,10 @@ const ReservationsPage = () => {
           <div><label className="block text-sm font-medium mb-1">Phone *</label><input value={form.customerPhone} onChange={(e) => setForm({ ...form, customerPhone: e.target.value })} className="input-field" required /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><label className="block text-sm font-medium mb-1">Date *</label><input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="input-field" required /></div>
-            <div><label className="block text-sm font-medium mb-1">Time *</label><input type="time" value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} className="input-field" required /></div>
+            <div><label className="block text-sm font-medium mb-1">Time *</label><input type="time" value={form.timeSlot} onChange={(e) => setForm({ ...form, timeSlot: e.target.value })} className="input-field" required /></div>
           </div>
-          <div><label className="block text-sm font-medium mb-1">Guests</label><input type="number" value={form.guests} onChange={(e) => setForm({ ...form, guests: e.target.value })} className="input-field" min="1" /></div>
-          <div><label className="block text-sm font-medium mb-1">Notes</label><textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="input-field" rows={2} /></div>
+          <div><label className="block text-sm font-medium mb-1">Guests</label><input type="number" value={form.guestCount} onChange={(e) => setForm({ ...form, guestCount: e.target.value })} className="input-field" min="1" /></div>
+          <div><label className="block text-sm font-medium mb-1">Notes</label><textarea value={form.specialRequest} onChange={(e) => setForm({ ...form, specialRequest: e.target.value })} className="input-field" rows={2} /></div>
           <div className="flex justify-end gap-3 pt-4 border-t"><button type="button" onClick={() => setShowModal(false)} className="btn-secondary">Cancel</button><button type="submit" className="btn-primary">Create</button></div>
         </form>
       </Modal>

@@ -2,6 +2,7 @@ const Order = require('../models/Order');
 const MenuItem = require('../models/MenuItem');
 const Customer = require('../models/Customer');
 const Inventory = require('../models/Inventory');
+const Reservation = require('../models/Reservation');
 
 const getDashboardStats = async (req, res) => {
   try {
@@ -44,6 +45,19 @@ const getDashboardStats = async (req, res) => {
       { $group: { _id: '$status', count: { $sum: 1 } } }
     ]);
 
+    // Today's reservations
+    const todayReservations = await Reservation.find({
+      organization: orgId,
+      date: { $gte: today, $lt: tomorrow }
+    }).sort('timeSlot').limit(10);
+
+    // Upcoming reservations (next 7 days)
+    const upcomingReservations = await Reservation.find({
+      organization: orgId,
+      date: { $gte: today },
+      status: { $in: ['pending', 'confirmed'] }
+    }).sort('date timeSlot').limit(10);
+
     res.json({
       success: true,
       data: {
@@ -56,7 +70,9 @@ const getDashboardStats = async (req, res) => {
         dailySales,
         recentOrders,
         topItems,
-        statusBreakdown
+        statusBreakdown,
+        todayReservations,
+        upcomingReservations
       }
     });
   } catch (error) {

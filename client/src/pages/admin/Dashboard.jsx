@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingBag, DollarSign, Users, AlertTriangle, TrendingUp, Clock, ArrowUpRight, ArrowDownRight, ChefHat, Utensils } from 'lucide-react';
+import { ShoppingBag, DollarSign, Users, AlertTriangle, TrendingUp, Clock, ArrowUpRight, ArrowDownRight, ChefHat, Utensils, Calendar, UserCheck } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { reportAPI } from '../../services/api';
 import StatusBadge from '../../components/ui/StatusBadge';
@@ -263,6 +263,63 @@ const Dashboard = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Upcoming Reservations */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="card p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-base font-bold text-slate-800 dark:text-white">Upcoming Reservations</h3>
+            <p className="text-xs text-slate-500 mt-0.5">Today&apos;s and upcoming bookings</p>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 px-2.5 py-1 rounded-lg font-semibold">
+            <Calendar size={14} />
+            {(stats?.upcomingReservations || []).length} upcoming
+          </div>
+        </div>
+        <div className="overflow-x-auto -mx-6">
+          <table className="premium-table w-full min-w-[600px]">
+            <thead>
+              <tr>
+                <th className="pl-6">Guest</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Guests</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(stats?.upcomingReservations || []).length > 0 ? (
+                (stats?.upcomingReservations || []).slice(0, 8).map((reservation) => (
+                  <tr key={reservation._id}>
+                    <td className="pl-6">
+                      <div>
+                        <p className="font-semibold text-slate-800 dark:text-slate-200">{reservation.customerName}</p>
+                        <p className="text-xs text-slate-400">{reservation.customerPhone}</p>
+                      </div>
+                    </td>
+                    <td className="text-slate-500">{new Date(reservation.date).toLocaleDateString()}</td>
+                    <td className="text-slate-500">{reservation.timeSlot}</td>
+                    <td>
+                      <span className="inline-flex items-center gap-1 text-sm text-slate-600 dark:text-slate-300">
+                        <UserCheck size={14} className="text-slate-400" />
+                        {reservation.guestCount}
+                      </span>
+                    </td>
+                    <td><StatusBadge status={reservation.status} /></td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="text-center py-12 text-slate-400">
+                    <Calendar size={28} className="mx-auto mb-2 opacity-40" />
+                    <p className="text-sm">No upcoming reservations</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
     </div>
   );
 };
