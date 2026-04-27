@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Search, Filter, Eye, Clock } from 'lucide-react';
+import { Plus, Search, Filter, Eye, Clock, Monitor, Globe } from 'lucide-react';
 import { orderAPI, menuAPI, tableAPI } from '../../services/api';
 import Modal from '../../components/ui/Modal';
 import StatusBadge from '../../components/ui/StatusBadge';
@@ -115,7 +115,13 @@ const OrdersPage = () => {
                 <StatusBadge status={order.status} />
               </div>
               <div className="space-y-1 text-sm text-slate-500">
-                <p className="capitalize">{order.orderType?.replace('_', ' ')} {order.table?.tableNo ? `• ${order.table.tableNo}` : ''}</p>
+                <div className="flex items-center gap-2">
+                  <span className="capitalize">{order.orderType?.replace('_', ' ')} {order.table?.tableNo ? `• ${order.table.tableNo}` : ''}</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium inline-flex items-center gap-0.5 ${order.orderSource === 'website' ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600'}`}>
+                    {order.orderSource === 'website' ? <Globe size={8} /> : <Monitor size={8} />}
+                    {order.orderSource === 'website' ? 'Online' : 'POS'}
+                  </span>
+                </div>
                 <p>{order.items?.length} items</p>
               </div>
               <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
@@ -146,6 +152,12 @@ const OrdersPage = () => {
               <div><p className="text-xs text-slate-500">Status</p><StatusBadge status={selectedOrder.status} /></div>
               <div><p className="text-xs text-slate-500">Payment</p><StatusBadge status={selectedOrder.paymentStatus} /></div>
               <div><p className="text-xs text-slate-500">Type</p><p className="text-sm font-medium capitalize">{selectedOrder.orderType?.replace('_', ' ')}</p></div>
+              <div><p className="text-xs text-slate-500">Source</p>
+                <span className={`text-xs px-2 py-0.5 rounded-md font-medium inline-flex items-center gap-1 ${selectedOrder.orderSource === 'website' ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600'}`}>
+                  {selectedOrder.orderSource === 'website' ? <Globe size={10} /> : <Monitor size={10} />}
+                  {selectedOrder.orderSource === 'website' ? 'Online Order' : 'POS Order'}
+                </span>
+              </div>
               <div><p className="text-xs text-slate-500">Table</p><p className="text-sm font-medium">{selectedOrder.table?.tableNo || 'N/A'}</p></div>
             </div>
             <div>

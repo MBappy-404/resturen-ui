@@ -25,6 +25,7 @@ import InvoicesPage from './pages/admin/InvoicesPage';
 import ReportsPage from './pages/admin/ReportsPage';
 import OrganizationPage from './pages/admin/OrganizationPage';
 import SettingsPage from './pages/admin/SettingsPage';
+import POSPage from './pages/admin/POSPage';
 
 // Customer Pages
 import HomePage from './pages/customer/HomePage';
@@ -49,6 +50,7 @@ const AdminRoutes = () => (
   <Routes>
     <Route path="login" element={<Login />} />
     <Route path="register" element={<Register />} />
+    <Route path="pos" element={<AdminProtectedRoute><POSPage /></AdminProtectedRoute>} />
     <Route element={<AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>}>
       <Route index element={<Dashboard />} />
       <Route path="menu" element={<MenuPage />} />

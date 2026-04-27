@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, ChefHat, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
+import { Clock, ChefHat, CheckCircle, AlertCircle, RefreshCw, Monitor, Globe } from 'lucide-react';
 import { orderAPI } from '../../services/api';
 import StatusBadge from '../../components/ui/StatusBadge';
 import toast from 'react-hot-toast';
@@ -71,7 +71,13 @@ const KitchenPage = () => {
                 </div>
               </div>
 
-              {order.table && <div className="text-xs bg-white/60 rounded-lg px-2 py-1 mb-2 inline-block">Table: {order.table.tableNo}</div>}
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {order.table && <span className="text-xs bg-white/60 rounded-lg px-2 py-1">Table: {order.table.tableNo}</span>}
+                <span className={`text-xs px-2 py-1 rounded-lg font-medium inline-flex items-center gap-1 ${order.orderSource === 'website' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}`}>
+                  {order.orderSource === 'website' ? <Globe size={10} /> : <Monitor size={10} />}
+                  {order.orderSource === 'website' ? 'Online' : 'POS'}
+                </span>
+              </div>
 
               <div className="space-y-1.5 mb-4">
                 {order.items?.map((item, i) => (

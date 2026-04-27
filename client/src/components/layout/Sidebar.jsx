@@ -1,10 +1,11 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, UtensilsCrossed, ClipboardList, ChefHat, Armchair, Users, Package, UserCircle, FileText, BarChart3, Building2, Settings, LogOut, X, CalendarDays } from 'lucide-react';
+import { LayoutDashboard, UtensilsCrossed, ClipboardList, ChefHat, Armchair, Users, Package, UserCircle, FileText, BarChart3, Building2, Settings, LogOut, X, CalendarDays, Monitor } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const menuItems = [
   { path: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
+  { path: '/admin/pos', icon: Monitor, label: 'POS Terminal', external: true },
   { path: '/admin/menu', icon: UtensilsCrossed, label: 'Menu' },
   { path: '/admin/orders', icon: ClipboardList, label: 'Orders' },
   { path: '/admin/kitchen', icon: ChefHat, label: 'Kitchen Display' },
@@ -48,17 +49,20 @@ const Sidebar = ({ isOpen, onClose }) => {
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-        {menuItems.map(({ path, icon: Icon, label, end }) => (
-          <NavLink
-            key={path}
-            to={path}
-            end={end}
-            onClick={onClose}
-            className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
-          >
-            <Icon size={18} strokeWidth={isActive => isActive ? 2.5 : 1.8} />
-            <span className="text-[13px]">{label}</span>
-          </NavLink>
+        {menuItems.map(({ path, icon: Icon, label, end, external }) => (
+          external ? (
+            <a key={path} href={path} onClick={onClose}
+              className="sidebar-item flex items-center gap-2 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10">
+              <Icon size={18} />
+              <span className="text-[13px]">{label}</span>
+            </a>
+          ) : (
+            <NavLink key={path} to={path} end={end} onClick={onClose}
+              className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}>
+              <Icon size={18} strokeWidth={isActive => isActive ? 2.5 : 1.8} />
+              <span className="text-[13px]">{label}</span>
+            </NavLink>
+          )
         ))}
       </nav>
 
