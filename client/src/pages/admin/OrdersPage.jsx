@@ -1,12 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Search, Filter, Eye, Clock, Monitor, Globe } from 'lucide-react';
+import { Plus, Search, Filter, Eye, Clock, Monitor, Globe, Trash2, ArrowLeft } from 'lucide-react';
+
+
 import { orderAPI, menuAPI, tableAPI } from '../../services/api';
 import Modal from '../../components/ui/Modal';
 import StatusBadge from '../../components/ui/StatusBadge';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import EmptyState from '../../components/ui/EmptyState';
+import ConfirmDialog from '../../components/ui/ConfirmDialog';
 import toast from 'react-hot-toast';
+
 
 const statusFlow = ['pending', 'confirmed', 'preparing', 'ready', 'served', 'completed'];
 const deliveryFlow = ['pending', 'confirmed', 'preparing', 'ready', 'out_for_delivery', 'delivered'];
@@ -15,13 +19,16 @@ const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState({ status: '', orderType: '', page: 1 });
+  const [filter, setFilter] = useState({ status: '', orderType: '', page: 1, limit: 10 });
+
   const [showModal, setShowModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
   const [tables, setTables] = useState([]);
+  const [deleteId, setDeleteId] = useState(null);
   const [newOrder, setNewOrder] = useState({ orderType: 'dine_in', table: '', items: [], customerInfo: { name: '', phone: '' } });
+
 
   const fetchOrders = useCallback(async () => {
     try {
@@ -32,7 +39,10 @@ const OrdersPage = () => {
     finally { setLoading(false); }
   }, [filter]);
 
-  useEffect(() => { fetchOrders(); }, [fetchOrders]);
+  useEffect(() => { 
+    fetchOrders(); 
+  }, [JSON.stringify(filter)]);
+
 
   const handleStatusUpdate = async (orderId, status) => {
     try {
@@ -47,11 +57,34 @@ const OrdersPage = () => {
 
   const handlePayment = async (orderId, paymentData) => {
     try {
+      // 1. Update Payment
       await orderAPI.updatePayment(orderId, paymentData);
-      toast.success('Payment updated');
+      
+      // 2. Automatically mark order as completed when paid from dashboard
+      await orderAPI.updateStatus(orderId, { status: 'completed' });
+      
+      // 3. If it's a Dine-in order with a table, release the table
+      const orderToUpdate = orders.find(o => o._id === orderId);
+      if (orderToUpdate?.table?._id) {
+        await tableAPI.updateStatus(orderToUpdate.table._id, { status: 'available' });
+      }
+
+      toast.success('Payment received and table released');
       fetchOrders();
+      if (selectedOrder?._id === orderId) setShowModal(false);
     } catch { toast.error('Error updating payment'); }
   };
+
+
+  const handleDelete = async () => {
+    try {
+      await orderAPI.deleteOrder(deleteId);
+      toast.success('Order deleted');
+      setDeleteId(null);
+      fetchOrders();
+    } catch { toast.error('Error deleting order'); }
+  };
+
 
   const openCreateOrder = async () => {
     try {
@@ -84,65 +117,221 @@ const OrdersPage = () => {
     } catch (error) { toast.error(error.response?.data?.message || 'Error creating order'); }
   };
 
+  // Calculate Stats for Today
+  const todayStats = orders.reduce((acc, order) => {
+    const orderDate = new Date(order.createdAt).toDateString();
+    const todayDate = new Date().toDateString();
+    if (orderDate === todayDate) {
+      acc.total++;
+      if (order.status === 'pending') acc.pending++;
+      acc.revenue += order.total || 0;
+    }
+    return acc;
+  }, { total: 0, pending: 0, revenue: 0 });
+
   if (loading) return <LoadingSpinner size="lg" text="Loading orders..." />;
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-blue-50 text-blue-600 rounded-xl"><Monitor size={24} /></div>
+            <div>
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">All Time Total</p>
+              <h3 className="text-2xl font-bold text-slate-800">{pagination.total || orders.length}</h3>
+            </div>
+          </div>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl"><Clock size={24} /></div>
+            <div>
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Today's Total</p>
+              <h3 className="text-2xl font-bold text-slate-800">{todayStats.total}</h3>
+            </div>
+          </div>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-amber-50 text-amber-600 rounded-xl"><Filter size={24} /></div>
+            <div>
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Today's Pending</p>
+              <h3 className="text-2xl font-bold text-slate-800">{todayStats.pending}</h3>
+            </div>
+          </div>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><Plus size={24} className="rotate-45" /></div>
+            <div>
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Today's Revenue</p>
+              <h3 className="text-2xl font-bold text-slate-800">৳{todayStats.revenue.toLocaleString()}</h3>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-100">
         <div className="flex flex-wrap gap-2">
           {['', 'pending', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled'].map(s => (
             <button key={s} onClick={() => setFilter({ ...filter, status: s, page: 1 })}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${filter.status === s ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
-              {s ? s.charAt(0).toUpperCase() + s.slice(1) : 'All'}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer ${filter.status === s ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}>
+              {s ? s.charAt(0).toUpperCase() + s.slice(1) : 'All Orders'}
             </button>
           ))}
         </div>
-        <button onClick={openCreateOrder} className="btn-primary text-sm flex items-center gap-2">
-          <Plus size={16} /> New Order
-        </button>
+        <div className="flex gap-2">
+          <button onClick={fetchOrders} className="p-2.5 bg-slate-50 text-slate-600 rounded-xl hover:bg-slate-100 transition-all border border-slate-200 shadow-sm cursor-pointer" title="Refresh Data">
+            <Search size={18} />
+          </button>
+          <button onClick={openCreateOrder} className="w-full sm:w-auto px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 cursor-pointer">
+            <Plus size={18} /> New Order
+          </button>
+        </div>
+
       </div>
+
 
       {orders.length === 0 ? (
         <EmptyState title="No orders" description="No orders found matching your filter" />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {orders.map((order, idx) => (
-            <motion.div key={order._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.03 }}
-              className="card p-4 cursor-pointer hover:ring-2 hover:ring-indigo-500/20"
-              onClick={() => { setSelectedOrder(order); setShowModal(true); }}>
-              <div className="flex items-center justify-between mb-3">
-                <span className="font-bold text-indigo-600">{order.orderNo}</span>
-                <StatusBadge status={order.status} />
+        <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50/50 border-b border-slate-100">
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider w-12">SL</th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Order Info</th>
+
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Source & Type</th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Total</th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Payment</th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {orders.map((order, idx) => (
+                  <motion.tr key={order._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: idx * 0.02 }}
+                    className="hover:bg-slate-50/50 transition-colors group">
+                    <td className="px-6 py-4">
+                      <span className="text-xs font-bold text-slate-400">
+                        {(((pagination.page || pagination.currentPage || filter.page || 1) - 1) * (pagination.limit || 10)) + idx + 1}
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-4">
+
+                      <div className="flex flex-col">
+                        <span className="font-bold text-slate-800">{order.orderNo}</span>
+                        <span className="text-[10px] text-slate-400 font-medium">{new Date(order.createdAt).toLocaleTimeString()}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className={`p-1 rounded-md ${order.orderSource === 'website' ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600'}`}>
+                            {order.orderSource === 'website' ? <Globe size={10} /> : <Monitor size={10} />}
+                          </span>
+                          <span className="text-xs font-bold text-slate-700 capitalize">{order.orderType?.replace('_', ' ')}</span>
+                        </div>
+                        {order.table?.tableNo && <span className="text-[10px] font-bold text-indigo-600 ml-5">Table: {order.table.tableNo}</span>}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-slate-800">৳{order.total?.toLocaleString()}</span>
+                        <span className="text-[10px] text-slate-400">{order.items?.length} Items</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4"><StatusBadge status={order.status} /></td>
+                    <td className="px-6 py-4"><StatusBadge status={order.paymentStatus} /></td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-end gap-2">
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {(order.orderType === 'delivery' ? deliveryFlow : statusFlow)
+                            .filter(s => statusFlow.indexOf(s) > statusFlow.indexOf(order.status) || deliveryFlow.indexOf(s) > deliveryFlow.indexOf(order.status))
+                            .slice(0, 1)
+                            .map(s => (
+                              <button key={s} onClick={(e) => { e.stopPropagation(); handleStatusUpdate(order._id, s); }}
+                                className="px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white text-[10px] font-bold transition-all uppercase">
+                                {s.replace('_', ' ')}
+                              </button>
+                            ))}
+                        </div>
+                        <button onClick={() => { setSelectedOrder(order); setShowModal(true); }}
+                          className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
+                          <Eye size={16} />
+                        </button>
+                        <button onClick={() => setDeleteId(order._id)}
+                          className="p-2 rounded-xl bg-slate-100 text-red-400 hover:bg-red-600 hover:text-white transition-all shadow-sm">
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination - Hard Way Fix */}
+          <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Navigation</span>
+              <span className="text-xs font-bold text-slate-600">
+                Page {filter.page} {pagination.totalPages ? `of ${pagination.totalPages}` : ''}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <button 
+                disabled={filter.page <= 1}
+                onClick={() => setFilter(prev => ({ ...prev, page: Math.max(1, prev.page - 1) }))}
+                className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-indigo-600 hover:text-white disabled:opacity-30 transition-all shadow-sm group"
+              >
+                <ArrowLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
+              </button>
+
+              <div className="flex items-center flex-wrap gap-1.5 px-2">
+                {Array.from({ length: pagination.totalPages || 1 }, (_, i) => i + 1).map((p) => (
+                  <button 
+                    key={p}
+                    onClick={() => setFilter(prev => ({ ...prev, page: p }))}
+                    className={`min-w-[36px] h-9 rounded-xl text-xs font-black transition-all transform active:scale-95 cursor-pointer ${filter.page === p ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 border-transparent' : 'bg-white border border-slate-200 text-slate-600 hover:border-indigo-400 hover:text-indigo-600'}`}
+                  >
+                    {p}
+                  </button>
+                ))}
               </div>
-              <div className="space-y-1 text-sm text-slate-500">
-                <div className="flex items-center gap-2">
-                  <span className="capitalize">{order.orderType?.replace('_', ' ')} {order.table?.tableNo ? `• ${order.table.tableNo}` : ''}</span>
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium inline-flex items-center gap-0.5 ${order.orderSource === 'website' ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600'}`}>
-                    {order.orderSource === 'website' ? <Globe size={8} /> : <Monitor size={8} />}
-                    {order.orderSource === 'website' ? 'Online' : 'POS'}
-                  </span>
-                </div>
-                <p>{order.items?.length} items</p>
-              </div>
-              <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
-                <span className="text-lg font-bold text-slate-800 dark:text-white">৳{order.total?.toLocaleString()}</span>
-                <StatusBadge status={order.paymentStatus} />
-              </div>
-              <div className="flex gap-1 mt-3">
-                {(order.orderType === 'delivery' ? deliveryFlow : statusFlow)
-                  .filter(s => statusFlow.indexOf(s) > statusFlow.indexOf(order.status) || deliveryFlow.indexOf(s) > deliveryFlow.indexOf(order.status))
-                  .slice(0, 2)
-                  .map(s => (
-                    <button key={s} onClick={(e) => { e.stopPropagation(); handleStatusUpdate(order._id, s); }}
-                      className="text-xs px-2 py-1 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 font-medium capitalize">
-                      {s.replace('_', ' ')}
-                    </button>
-                  ))}
-              </div>
-            </motion.div>
-          ))}
+
+
+
+              <button 
+                disabled={pagination.totalPages ? filter.page >= pagination.totalPages : orders.length < 10}
+                onClick={() => setFilter(prev => ({ ...prev, page: prev.page + 1 }))}
+                className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-indigo-600 hover:text-white disabled:opacity-30 transition-all shadow-sm group"
+              >
+                <ArrowLeft size={16} className="rotate-180 group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            </div>
+          </div>
+
         </div>
       )}
+
+      <ConfirmDialog 
+        isOpen={!!deleteId} 
+        onClose={() => setDeleteId(null)} 
+        onConfirm={handleDelete} 
+        title="Delete Order"
+        message="Are you sure you want to delete this order? This action cannot be undone."
+      />
+
+
 
       {/* Order Detail Modal */}
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={`Order ${selectedOrder?.orderNo}`} size="lg">
